@@ -30,6 +30,11 @@ export default {
       this.newItem = "";
       this.todos = todos;
     },
+    removeItem(id) {
+      const todos = [...this.todos];
+      const filteredTodos = todos.filter((todo) => todo.id !== id);
+      this.todos = filteredTodos;
+    },
   },
 };
 </script>
@@ -46,7 +51,8 @@ export default {
       />
       <ul>
         <li
-          @click="clickTodo(todo.id)"
+          @click.exact="clickTodo(todo.id)"
+          @click.shift="removeItem(todo.id)"
           :class="{
             'bg-slate-300': todo.completed,
             'text-slate-400': todo.completed,
