@@ -4,6 +4,7 @@ export default {
     return {
       newItem: "",
       todos: [],
+      editingItemId: false,
     };
   },
   methods: {
@@ -20,20 +21,36 @@ export default {
     },
     addItem() {
       const todos = [...this.todos];
-      const lastTodo = todos[todos.length - 1];
-      const id = lastTodo ? lastTodo.id + 1 : 1;
-      todos.push({
-        id,
-        title: this.newItem,
-        completed: false,
-      });
-      this.newItem = "";
-      this.todos = todos;
+      
+      if (this.editingItemId) {
+        const todo = todos.find((todo) => todo.id === this.editingItemId);
+        todo.title = this.newItem;
+        this.editingItemId = null;
+
+        this.todos = todos;
+        this.newItem = "";
+      } else {
+        const lastTodo = todos[todos.length - 1];
+        const id = lastTodo ? lastTodo.id + 1 : 1;
+        todos.push({
+          id,
+          title: this.newItem,
+          completed: false,
+        });
+        this.newItem = "";
+        this.todos = todos;
+      }
     },
     removeItem(id) {
       const todos = [...this.todos];
       const filteredTodos = todos.filter((todo) => todo.id !== id);
       this.todos = filteredTodos;
+    },
+    editItem(id) {
+      const todos = [...this.todos];
+      const filteredTodos = todos.filter((todo) => todo.id === id);
+      this.newItem = filteredTodos[0].title;
+      this.editingItemId = id;
     },
   },
 };
@@ -53,6 +70,7 @@ export default {
         <li
           @click.exact="clickTodo(todo.id)"
           @click.shift="removeItem(todo.id)"
+          @contextmenu.prevent="editItem(todo.id)"
           :class="{
             'bg-slate-300': todo.completed,
             'text-slate-400': todo.completed,
