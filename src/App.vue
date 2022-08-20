@@ -53,6 +53,16 @@ export default {
       this.editingItemId = id;
     },
   },
+  mounted() {
+    this.todos = localStorage.getItem("todos")
+      ? JSON.parse(localStorage.getItem("todos"))
+      : [];
+  },
+  watch: {
+    todos() {
+      localStorage.setItem("todos", JSON.stringify(this.todos));
+    },
+  }
 };
 </script>
 
